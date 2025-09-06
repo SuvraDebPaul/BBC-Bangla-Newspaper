@@ -1,5 +1,6 @@
 // GLobal Constants
 const navContainer = document.getElementById("categoryContainer");
+const newsContainer = document.getElementById("newsContainer");
 
 // Loading Catagories for Menu
 const loadCatagories = () => {
@@ -44,5 +45,35 @@ const loadNewsByCategory = (categoryId) => {
   const newsByCatUrl = `https://news-api-fs.vercel.app/api/categories/${categoryId}`;
   fetch(newsByCatUrl)
     .then((res) => res.json())
-    .then((data) => console.log(data.articles));
+    .then((data) => showNewsByCategory(data.articles))
+    .catch((err) => {
+      console.log(err);
+    });
 };
+
+const showNewsByCategory = (articles) => {
+  //console.log(articles);
+  newsContainer.innerHTML = "";
+  articles.forEach((article) => {
+    newsContainer.innerHTML += `
+        <div class="news">
+          <img
+            src="${article.image.srcset[5].url}"
+            alt="${article.image.alt}"
+          />
+          <h2 class="text-2xl font-bold my-5">
+            <a href="${article.id}"
+              >${article.title}</a
+            >
+          </h2>
+          <p class="text-gray-600">
+            ${article.description ? article.description : ""}
+          </p>
+          <p class="my-5 px-5 py-2 bg-gray-200 inline-block rounded-xl">
+           ${article.time}
+          </p>
+        </div>
+    `;
+  });
+};
+loadNewsByCategory("main");
